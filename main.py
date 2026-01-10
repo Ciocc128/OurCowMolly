@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-api = FastAPI()
+app = FastAPI()
 
-@api.get("/")
+@app.get("/")
 def index():
     return {"message": "First FastAPI app!"}
