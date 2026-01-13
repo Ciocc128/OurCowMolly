@@ -16,7 +16,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
+    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False, index=True)
     total_price = Column(Numeric(10,2), nullable=False, default=0)
     status = Column(
         Enum(OrderStatus, name="order_status"),
