@@ -1,4 +1,11 @@
 from fastapi import FastAPI
+import logging
+
+# Global logging config (MVP)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s | %(name)s | %(message)s",
+)
 
 from core.database import Base, engine
 from products.routers import router as products_router
