@@ -2,6 +2,9 @@ from pydantic import BaseModel
 from decimal import Decimal
 from datetime import datetime
 
+class MessageResponse(BaseModel):
+    message: str
+
 class ProductBase(BaseModel):
     name: str
     price: Decimal

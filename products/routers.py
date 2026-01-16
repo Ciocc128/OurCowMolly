@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from core.database import get_db
-from .schemas import ProductCreate, ProductResponse, ProductUpdate
+from .schemas import ProductCreate, ProductResponse, ProductUpdate, MessageResponse
 from . import service
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ def create_product_endpoint(
     payload: ProductCreate,
     db: Session = Depends(get_db)
 ):
+    print(f"[DEBUG] Received payload: {payload}")  # Debug: mostra i dati ricevuti dal client
     product = service.create_product(db=db, payload=payload)
     logger.info("Created product ID=%s name=%s", product.id, product.name)
     return product
@@ -63,3 +64,14 @@ def update_product_endpoint(
     logger.info("Updated product ID=%s", product_id)
     return product
 
+@router.delete(
+    "/{product_id}",
+    response_model=MessageResponse
+)
+def delete_product_endpoint(product_id: int, db: Session = Depends(get_db)):
+    product = service.delete_product(db=db, product_id=product_id)
+    if product is None:
+        raise HTTPException(status_code=404, detail=f"Product with ID={product_id} not found")
+    
+    logger.info("Product ID=%s deleted successfully!", product_id)
+    return {"message": f"Product with ID={product_id} successfully deleted!"}
