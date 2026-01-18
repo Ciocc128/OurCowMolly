@@ -13,6 +13,7 @@ router = APIRouter(
     tags=["Products"]
 )
 
+
 @router.post(
     "",
     response_model=ProductResponse,
@@ -37,7 +38,6 @@ def list_products_endpoint(db: Session = Depends(get_db)):
     return products
 
 
-#TODO Handle the edge cases
 @router.get(
     "/{product_id}",
     response_model=ProductResponse
@@ -47,6 +47,7 @@ def get_product_by_id_endpoint(product_id: int, db: Session = Depends(get_db)):
     if product is None:
         raise HTTPException(status_code=404, detail=f"Product with ID={product_id} not found")
     return product
+
 
 @router.patch(
     "/{product_id}",
@@ -63,6 +64,7 @@ def update_product_endpoint(
     
     logger.info("Updated product ID=%s", product_id)
     return product
+
 
 @router.delete(
     "/{product_id}",
