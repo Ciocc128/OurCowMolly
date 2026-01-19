@@ -3,7 +3,7 @@ from sqlalchemy.orm  import Session
 import logging
 
 from core.database import get_db
-from .schemas import CustomerCreate, CustomerResponse, CustomerUpdate
+from .schemas import CustomerCreate, CustomerResponse, CustomerUpdate, MessageResponse
 from . import service
 
 logger = logging.getLogger(__name__)
@@ -50,4 +50,32 @@ def get_customer_by_id_endpoint(
         raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found")
     return customer
 
+
+@router.patch(
+    "/{customer_id}",
+    response_model=CustomerResponse
+)
+def update_customer_endpoint(
+    customer_id: int,
+    payload: CustomerUpdate,
+    db: Session = Depends(get_db)
+):
+    customer = service.update_customer(db=db, customer_id=customer_id, payload=payload)
+    if customer is None:
+        raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found!")
     
+    logger.info("Updated customer ID=%s", customer.id)
+    return customer
+
+
+@router.delete(
+    "/{customer_id}",
+    response_model=MessageResponse
+)
+def delete_customer_endpoint(customer_id: int, db: Session = Depends(get_db)):
+    result = service.delete_customer(db=db, customer_id=customer_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found!")
+    
+    logger.info("Deleted customer ID=%s", customer_id)
+    return result

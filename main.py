@@ -9,6 +9,7 @@ logging.basicConfig(
 
 from core.database import Base, engine
 from products.routers import router as products_router
+from customers.routers import router as customers_router
 
 # Import models SQLAlchemy registers tables before create_all
 from products import models as _products_model
@@ -21,7 +22,8 @@ app = FastAPI(title= "OurCowMolly API")
 Base.metadata.create_all(bind=engine)
 
 #Routers
-app.include_router(products_router)
+app.include_router(products_router, prefix="/api/v1")
+app.include_router(customers_router, prefix="/api/v1")
 
 @app.get("/")
 def index():

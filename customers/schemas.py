@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+class MessageResponse(BaseModel):
+    message: str
+
 class CustomerBase(BaseModel):
     name: str
     email: str | None = None
