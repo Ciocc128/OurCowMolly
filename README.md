@@ -71,6 +71,5 @@ Principles adopted:
 ## Sviluppi futuri (post-MVP)
 
 ...stay tuned!
-
                                                                                     *Ciocc128*
 
