@@ -1,54 +1,44 @@
 # 🥛 OurCowMolly
 
-OurCowMolly è un progetto backend sviluppato come **Minimum Viable Product (MVP)** con l’obiettivo di simulare la gestione digitale di un piccolo negozio locale (es. un lattaio), permettendo la **creazione, gestione e tracciamento degli ordini** in modo semplice e strutturato.
-
-Il progetto nasce con una forte finalità **formativa**: migliorare le competenze in **backend development**, **system design** e **API design**, adottando buone pratiche realistiche ma mantenendo la complessità sotto controllo.
+OurCowMolly is a backend project developed as an MVP with the goal of simulating the digital management of a small local dairy shop, enabling the creation, management, and tracking of orders in a simple and structured way.
 
 ---
 
-## 🎯 Obiettivo del progetto
+## Project Goal
 
-Costruire un backend che:
+Build a backend that:
 
-- gestisca **prodotti**, **clienti** e **ordini**
-- implementi **logica di business reale** (stock, stati ordine, prezzi)
-- esponga **API REST** chiare e testabili
-- sia facilmente estendibile verso:
-  - una dashboard web
-  - un’interazione tramite chatbot (LLM)
+- manages products, customers, and orders
+- implements real-world business logic (stock, order statuses, pricing)
+- exposes clear and testable **REST APIs**
+- is easily extensible towards:
+  - a web dashboard
+  - an interaction layer via chatbot (LLM)
 
 ---
 
-## 🚀 MVP — Cosa include
+## MVP
 
 ### 📦 Products
-- CRUD completo per i prodotti
-- Gestione dello stock (`in_stock`)
-- Prezzo con tipo numerico preciso (`Numeric / Decimal`)
+- Full CRUD operations for products
+- Stock management
 
 ### 👤 Customers
-- CRUD completo per i clienti
-- Associazione cliente → ordini
+- Full CRUD operations for customers
+- Customer → orders associations
 
 ### 🧾 Orders
-- Creazione ordini con più prodotti (`OrderItem`)
-- Salvataggio del **prezzo unitario snapshot** (`unit_price`)
-- Calcolo e persistenza del `total_price`
-- Stati dell’ordine:
-  - `PENDING`
-  - `CONFIRMED`
-  - `DELIVERED`
-  - `CANCELLED`
-- Regole di business:
-  - lo stock viene scalato **solo alla conferma** (`CONFIRMED`)
-  - transizioni di stato controllate
-  - errori gestiti con eccezioni custom (`NotFoundError`, `BadRequestError`)
+- Creation of orders with multiple products
+- Business rules:
+  - stock is decreased only when the order is confirmed (`CONFIRMED`)
+  - controlled order status transitions
+  - errors handled via custom exceptions (`NotFoundError`, `BadRequestError`)
 
 ---
 
-## 🏗️ Architettura
+## Architettura
 
-Struttura modulare:
+Modular structure:
 
 ```
 .
@@ -60,60 +50,27 @@ Struttura modulare:
 └── requirements.txt
 ```
 
-Principi adottati:
-- separazione tra **router** (HTTP layer) e **service** (business logic)
-- ORM con **SQLAlchemy**
-- validazione e serializzazione con **Pydantic schemas**
-- logging strutturato
-- codice **sincrono** (scelta intenzionale per semplicità MVP)
+Principles adopted:
+- separation between routers (HTTP layer) and services (business logic)
+- ORM-based data access using SQLAlchemy
+- data validation and serialization via Pydantic schemas
+- structured logging
+- synchronous codebase
 
 ---
 
-## 🛠️ Stack Tecnologico
+## Stack
 
 - Python 3.10+
 - FastAPI
 - SQLAlchemy
-- SQLite (database locale per MVP)
+- SQLite (local DB for MVP)
 - Pydantic
 - Uvicorn
 
----
+## Sviluppi futuri (post-MVP)
 
-## ▶️ Avvio del progetto
+...stay tuned!
 
-1) Crea e attiva un virtual environment
+                                                                                    *Ciocc128*
 
-2) Installa le dipendenze:
-
-```bash
-pip install -r requirements.txt
-```
-
-3) Avvia il server:
-
-```bash
-uvicorn main:app --reload
-```
-
-4) Apri la documentazione interattiva:
-
-- http://127.0.0.1:8000/docs
-
----
-
-## 🔮 Sviluppi futuri (post-MVP)
-
-- Interazione tramite **chatbot (LLM)** per creare ordini in linguaggio naturale
-- Dashboard web per il lattaio
-- Autenticazione e ruoli
-- Migrazione a database persistente (es. PostgreSQL)
-- Migrations con Alembic
-- Possibile uso di WebSocket per aggiornamenti realtime
-
----
-
-## 📌 Note finali
-
-Questo progetto è pensato come **base solida e didattica**, non come prodotto enterprise.
-Le scelte architetturali privilegiano chiarezza, leggibilità ed estendibilità.
