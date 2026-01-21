@@ -23,7 +23,7 @@ def create_customer_endpoint(
     payload: CustomerCreate,
     db: Session = Depends(get_db)
 ):
-    customer = service.create_customers(db=db, payload=payload)
+    customer = service.create_customer(db=db, payload=payload)
     logger.info("Created customer ID=%s: name=%s", customer.id, customer.name)
     return customer
 

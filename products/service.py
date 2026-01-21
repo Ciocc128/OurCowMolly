@@ -41,7 +41,7 @@ def update_product(db: Session, product_id: int, payload: ProductUpdate) -> Prod
     db.refresh(product)
     return product
 
-def delete_product(db: Session, product_id: int) -> Product | None:
+def delete_product(db: Session, product_id: int) -> dict | None:
     result = db.execute(select(Product).where(Product.id == product_id))
     product = result.scalar_one_or_none()
 

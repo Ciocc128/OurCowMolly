@@ -10,6 +10,7 @@ logging.basicConfig(
 from core.database import Base, engine
 from products.routers import router as products_router
 from customers.routers import router as customers_router
+from orders.routers import router as orders_router
 
 # Import models SQLAlchemy registers tables before create_all
 from products import models as _products_model
@@ -24,6 +25,7 @@ Base.metadata.create_all(bind=engine)
 #Routers
 app.include_router(products_router, prefix="/api/v1")
 app.include_router(customers_router, prefix="/api/v1")
+app.include_router(orders_router, prefix="/api/v1")
 
 @app.get("/")
 def index():

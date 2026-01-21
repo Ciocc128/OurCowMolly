@@ -5,7 +5,7 @@ from .models import Customer
 from .schemas import CustomerCreate, CustomerResponse, CustomerUpdate
 
 
-def create_customers(db: Session, payload: CustomerCreate):
+def create_customer(db: Session, payload: CustomerCreate) -> Customer:
     customer = Customer(
         name = payload.name,
         address = payload.address,
@@ -18,13 +18,13 @@ def create_customers(db: Session, payload: CustomerCreate):
     return customer
 
 
-def list_customers(db: Session):
+def list_customers(db: Session) -> list[Customer]:
     result = db.execute(select(Customer).order_by(Customer.name))
     customers = result.scalars().all()
     return customers
 
 
-def get_customer_by_id(db: Session, customer_id: int):
+def get_customer_by_id(db: Session, customer_id: int) -> Customer | None:
     result = db.execute(select(Customer).where(Customer.id == customer_id))
     customer = result.scalar_one_or_none()
     return customer
@@ -45,7 +45,7 @@ def update_customer(db: Session, customer_id: int, payload: CustomerUpdate) -> C
     return customer
 
 
-def delete_customer(db: Session, customer_id: int):
+def delete_customer(db: Session, customer_id: int) -> dict | None:
     result = db.execute(select(Customer).where(Customer.id == customer_id))
     customer = result.scalar_one_or_none()
 
