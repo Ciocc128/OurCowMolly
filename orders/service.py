@@ -8,12 +8,14 @@ from products.models import Product
 from .schemas import OrderCreate, OrderResponse, OrderStatusUpdate
 
 from customers.service import get_customer_by_id
+from products.service import get_product_by_id
 
 class NotFoundError(ValueError):
     pass
 
 class BadRequestError(ValueError):
     pass
+
 
 def create_order(db: Session, payload: OrderCreate) -> Order:
     # Validate items
@@ -85,5 +87,96 @@ def create_order(db: Session, payload: OrderCreate) -> Order:
 
     return order_with_items
 
-        
-        
+
+def list_orders(
+    db: Session,
+    status: OrderStatus | None = None,
+    customer_id: int | None = None
+) -> list[Order]:
+    query = select(Order).order_by(Order.created_at.desc())
+
+    if status:
+        query = query.where(Order.status == status)
+
+    if customer_id:
+        query = query.where(Order.customer_id == customer_id)
+    
+    result = db.execute(query)
+    orders = result.scalars().all()
+    return orders
+
+
+def get_order_by_id(db: Session, order_id: int) -> Order | None:
+    result = db.execute(
+        select(Order)
+        .options(selectinload(Order.items))
+        .where(Order.id == order_id)
+    )
+    order = result.scalar_one_or_none()
+    return order
+
+
+def update_order_status(db: Session, order_id: int, new_status: OrderStatus) -> Order:
+    # Retrieve the order
+    order = db.execute(
+        select(Order)
+        .options(
+            selectinload(Order.items)
+            .selectinload(OrderItem.product)
+        )
+        .where(Order.id == order_id)
+    ).scalar_one_or_none()
+
+    if order is None:
+        raise NotFoundError(f"Order with ID={order_id} not found")
+    
+    # Validate status transition:
+    # PENDING -> CONFIRMED -> DELIVERED
+    # PENDING -> CANCELLED
+    valid_transitions = {
+        OrderStatus.PENDING: {OrderStatus.CONFIRMED, OrderStatus.CANCELLED},
+        OrderStatus.CONFIRMED: {OrderStatus.DELIVERED},
+        OrderStatus.DELIVERED: set(),
+        OrderStatus.CANCELLED: set()
+    }
+    
+    current_status = order.status
+
+    if current_status == new_status:
+        raise BadRequestError(f"Order already in status {new_status.value}")
+    
+    if new_status not in valid_transitions[current_status]:
+        raise BadRequestError(
+            f"Cannot change status from {current_status} to {new_status.value}"
+        )
+    
+    # Stock update only when order is confirmed
+    if new_status == OrderStatus.CONFIRMED:
+        for item in order.items:
+            product = item.product
+            if product.in_stock < item.quantity:
+                raise BadRequestError(
+                    f"Insufficient stock for product ID={product.id},"
+                    f"available={product.in_stock},"
+                    f"requested={item.quantity}"
+                )
+            
+        for item in order.items:
+            item.product.in_stock -= item.quantity
+
+    # Update status
+    order.status = new_status
+
+    db.commit()
+
+    order = db.execute(
+        select(Order)
+        .options(
+            selectinload(Order.items)
+            .selectinload(OrderItem.product)
+        )
+        .where(Order.id == order_id)
+    ).scalar_one()
+
+    return order
+            

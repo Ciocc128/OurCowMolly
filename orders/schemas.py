@@ -43,3 +43,13 @@ class OrderResponse(OrderBase):
 
     class Config:
         from_attributes = True
+
+class OrderListResponse(OrderBase):
+    id: int
+    total_price: Decimal
+    status: OrderStatus
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
