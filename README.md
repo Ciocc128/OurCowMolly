@@ -68,8 +68,8 @@ Principles adopted:
 - Pydantic
 - Uvicorn
 
-## Sviluppi futuri (post-MVP)
+## Future implementations
 
 ...stay tuned!
-                                                                                    *Ciocc128*
+
 
